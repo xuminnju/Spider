@@ -6,6 +6,7 @@ import zlib
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 from bson.binary import Binary
+from link_crawler import link_crawler
 
 
 class MongoCache:
@@ -14,7 +15,7 @@ class MongoCache:
 
     >>> cache = MongoCache()
     >>> cache.clear()
-    >>> url = 'http://example.webscraping.com'
+    >>> url = 'http://example.webscraping.com/places/default/index'
     >>> result = {'html': '...'}
     >>> cache[url] = result
     >>> cache[url]['html'] == result['html']
@@ -26,7 +27,7 @@ class MongoCache:
     >>> cache[url]
     Traceback (most recent call last):
      ...
-    KeyError: 'http://example.webscraping.com does not exist'
+    KeyError: 'http://example.webscraping.com/places/default/index does not exist'
     """
 
     def __init__(self, client=None, expires=timedelta(days=30)):
@@ -69,3 +70,6 @@ class MongoCache:
 
     def clear(self):
         self.db.webpage.drop()
+
+if __name__ == '__main__':
+    link_crawler('http://example.webscraping.com/places/default/index', '/places/default/view|/places/default/index', cache=MongoCache())
